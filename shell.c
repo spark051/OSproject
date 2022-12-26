@@ -80,7 +80,7 @@ void openHelp(){
 	return;
 }
 
-firstPart(char* dir){
+int firstPart(char* dir){
 	FILE *fp;
 	char word[1000];
 	fp = fopen(dir, "r");
