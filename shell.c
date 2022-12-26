@@ -85,22 +85,84 @@ int firstPart(char* dir){
 	char word[1000];
 	fp = fopen(dir, "r");
 	if (fp == NULL) {
-    	printf("The file address if wreong!\n");
+    	printf("The file address if wrong!\n");
 } 	else {
     	while (!feof(fp)) {
 			fscanf(fp,"%s%*[^\n]",word);
-        	printf("word read is: %s\n", word);
-        	strcpy(word,""); //is this correct?
+        	printf("%s\n", word);
+        	strcpy(word,"");
     }
 }
 	fclose(fp);
 	return 0;
 }
 
+int MostRepeatString(char *dir){
+    FILE *file;  
+    char ch, *line;  
+    size_t len = 0, read;  
+    char words[1000][1000], word[20];  
+    int i = 0, j, k, maxCount = 0, count;  
+      
+    //Opens file in read mode  
+    file = fopen(dir,"r");  
+      
+    //If file doesn't exist  
+    if (file == NULL){  
+        printf("File not found");  
+        exit(EXIT_FAILURE);  
+    }  
+      
+    //Since, C doesn't provide in-built function,   
+    //following code will split content of file into words  
+    while ((read = getline(&line, &len, file)) != -1) {  
+          
+        for(k=0; line[k]!='\0'; k++){  
+            //Here, i represents row and j represents column of two-dimensional array words   
+            if(line[k] != ' ' && line[k] != '\n' && line[k] != ',' && line[k] != '.' ){  
+                words[i][j++] = (line[k]);  
+            }  
+            else{  
+                words[i][j] = '\0';  
+                //Increment row count to store new word  
+                i++;  
+                //Set column count to 0  
+                j = 0;  
+            }  
+        }  
+    }  
+      
+    int length = i;  
+      
+    //Determine the most repeated word in a file  
+    for(i = 0; i < length; i++){  
+        count = 1;  
+        //Count each word in the file and store it in variable count  
+        for(j = i+1; j < length; j++){  
+            if(strcmp(words[i], words[j]) == 0 && (strcmp(words[i]," ") != 0)){  
+                count++;  
+            }   
+        }  
+        //If maxCount is less than count then store value of count in maxCount   
+        //and corresponding word to variable word  
+        if(count > maxCount){  
+            maxCount = count;  
+            strcpy(word, words[i]);  
+        }  
+    }  
+      
+    printf("%s\n", word);  
+    fclose(file);  
+      
+    return 0;  
+}
+
+
+
 // Function to execute builtin commands
 int ownCmdHandler(char** parsed){
 
-	int NoOfOwnCmds = 4, i, switchOwnArg = 0;
+	int NoOfOwnCmds = 5, i, switchOwnArg = 0;
 	char* ListOfOwnCmds[NoOfOwnCmds];
 	char* username;
 
@@ -108,6 +170,7 @@ int ownCmdHandler(char** parsed){
 	ListOfOwnCmds[1] = "cd";
 	ListOfOwnCmds[2] = "help";
 	ListOfOwnCmds[3] = "fp"; //first part in each line 
+    ListOfOwnCmds[4] = "mrs"; //most repeat string
 
 	for (i = 0; i < NoOfOwnCmds; i++) {
 		if (strcmp(parsed[0], ListOfOwnCmds[i]) == 0) {
@@ -128,6 +191,10 @@ int ownCmdHandler(char** parsed){
 	case 4:
 		firstPart(parsed[1]);
 		return 1;
+    case 5:
+        MostRepeatString(parsed[1]);
+        return 1;
+
 	default:
 		break;
 	}
