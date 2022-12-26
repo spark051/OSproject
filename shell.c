@@ -157,12 +157,50 @@ int MostRepeatString(char *dir){
     return 0;  
 }
 
+int DelSpace(char *dir){
+    FILE * f;
+	int a;
 
+	f = fopen (dir,"r");
+
+	if (f){
+		do {
+			a = fgetc (f);
+			if ( isgraph(a) ) putchar (a);
+		} while (a != EOF);
+		fclose (f);
+	}
+	printf("\n\n");
+	return 0;
+}
+
+int CountLine(char *dir){
+    FILE *fp;
+    int count = 1;  // Line counter (result)
+    char c;  // To store a character read from file
+    fp = fopen(dir, "r");
+ 
+    // Check if file exists
+    if (fp == NULL){
+        printf("Could not open file");
+        return 0;
+    }
+ 
+    // Extract characters from file and store in character c
+    for (c = getc(fp); c != EOF; c = getc(fp))
+        if (c == '\n') // Increment count if this character is newline
+            count = count + 1;
+ 
+    // Close the file
+    printf("The file %s has %d lines\n ", dir, count);
+    fclose(fp); 
+    return 0;
+}
 
 // Function to execute builtin commands
 int ownCmdHandler(char** parsed){
 
-	int NoOfOwnCmds = 5, i, switchOwnArg = 0;
+	int NoOfOwnCmds = 7, i, switchOwnArg = 0;
 	char* ListOfOwnCmds[NoOfOwnCmds];
 	char* username;
 
@@ -171,6 +209,8 @@ int ownCmdHandler(char** parsed){
 	ListOfOwnCmds[2] = "help";
 	ListOfOwnCmds[3] = "fp"; //first part in each line 
     ListOfOwnCmds[4] = "mrs"; //most repeat string
+    ListOfOwnCmds[5] = "ds"; //delete spaces
+    ListOfOwnCmds[6] = "cl";
 
 	for (i = 0; i < NoOfOwnCmds; i++) {
 		if (strcmp(parsed[0], ListOfOwnCmds[i]) == 0) {
@@ -189,10 +229,16 @@ int ownCmdHandler(char** parsed){
 		openHelp();
 		return 1;
 	case 4:
-		firstPart(parsed[1]);
+		firstPart(parsed[1]); //fp
 		return 1;
     case 5:
-        MostRepeatString(parsed[1]);
+        MostRepeatString(parsed[1]); //mrs
+        return 1;
+    case 6:
+        DelSpace(parsed[1]); //ds
+        return 1;
+    case 7:
+        CountLine(parsed[1]); //cl
         return 1;
 
 	default:
