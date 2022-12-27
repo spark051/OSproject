@@ -8,16 +8,13 @@
 #include<readline/history.h>
 #define MAXCOM 1000 // max number of letters to be supported
 #define MAXLIST 100 // max number of commands to be supported
-// Clearing the shell using escape sequences
-#define clear() printf("\033[H\033[J")
 
 // shell  start
 void ShellStart(){
-    clear();
-    printf("Welcome to our Linux Shell :)");
+    printf("\033[H\033[J"); // clear shell
+    printf("Welcome to our Linux Shell :)\n");
     char* username = getenv("USER");
     sleep(1);
-    clear();
 }
 
 //get input
@@ -70,13 +67,18 @@ void execArgs(char** parsed){
 }
 
 // Help command 
-void openHelp(){
-	puts("\n***WELCOME TO MY SHELL HELP***"
-		"\nList of Commands supported:"
-		"\n>cd"
-		"\n>ls"
-		"\n>exit"
-		"\n>rw"
+void HelpMenu(){
+	puts("\n***WELCOME TO MY SHELL HELP***\n"
+		"\nList of Commands supported:\n"
+		"\n>cd ->  change directory"
+		"\n>ls -> long listing format"
+		"\n>exit -> exit from shell"
+		"\n>fp -> show first word in each line"
+		"\nmrs -> show most repeat string"
+		"\nds -> delete white spaces"
+		"\ncl -> counting lines of file"
+		"\nsuc -> show uncomment lines"
+		"\nftl -> show first ten lines"
 		);
 
 	return;
@@ -248,70 +250,87 @@ int FirstTenLine(char *dir){
     return 0;
 }
 
-
 // Function to execute builtin commands
 int ownCmdHandler(char** parsed){
 
-	int NoOfOwnCmds = 9, i, switchOwnArg = 0;
-	char* ListOfOwnCmds[NoOfOwnCmds];
+	int NoOfCmds = 9, i, switchOwnArg = 0;
+	char* ListOfCmds[NoOfCmds];
 	char* username;
 
-	ListOfOwnCmds[0] = "exit";
-	ListOfOwnCmds[1] = "cd";
-	ListOfOwnCmds[2] = "help";
-	ListOfOwnCmds[3] = "fp"; //first part in each line 
-    ListOfOwnCmds[4] = "mrs"; //most repeat string
-    ListOfOwnCmds[5] = "ds"; //delete spaces
-    ListOfOwnCmds[6] = "cl"; //count line
-	ListOfOwnCmds[7] = "suc"; //show uncomment txt
-	ListOfOwnCmds[8] = "ftl"; //first ten line 
+	ListOfCmds[0] = "bye";
+	ListOfCmds[1] = "cd";
+	ListOfCmds[2] = "help";
+	ListOfCmds[3] = "fp"; //first part in each line 
+    ListOfCmds[4] = "mrs"; //most repeat string
+    ListOfCmds[5] = "ds"; //delete spaces
+    ListOfCmds[6] = "cl"; //count line
+	ListOfCmds[7] = "suc"; //show uncomment txt
+	ListOfCmds[8] = "ftl"; //first ten line 
 
-	for (i = 0; i < NoOfOwnCmds; i++) {
-		if (strcmp(parsed[0], ListOfOwnCmds[i]) == 0) {
+	for (i = 0; i < NoOfCmds; i++) {
+		if (strcmp(parsed[0], ListOfCmds[i]) == 0) {
 			switchOwnArg = i + 1;
 			break;
 		}
 	}
+
+	pid_t pid = fork();
+	if (pid == 0){
 	switch (switchOwnArg) {
 	case 1:
-		printf("\nBye Bye\n");
-		exit(0);
-	case 2:
-		chdir(parsed[1]);
-		return 1;
+		//printf("\nBye Bye\n"); //bye
+		exit(3);
+	case 2: 
+		//chdir(parsed[1]); //cd
+		exit(4);
+		//return 1;
 	case 3:
-		openHelp();
-		return 1;
+		HelpMenu();
+		exit(1);
 	case 4:
 		firstPart(parsed[1]); //fp
-		return 1;
+		exit(1);
     case 5:
         MostRepeatString(parsed[1]); //mrs
-        return 1;
+		exit(1);
     case 6:
         DelSpace(parsed[1]); //ds
-        return 1;
+		exit(1);
     case 7:
         CountLine(parsed[1]); //cl
-        return 1;
+		exit(1);
 	case 8:
 		ShowUnComment(parsed[1]); //suc
-		return 1;
+		exit(1);
 	case 9:
 		FirstTenLine(parsed[1]); //ftl
-		return 1;
+		exit(1);
 	
 	default:
 		break;
 	}
 
-	return 0;
+	exit(0);
+}
+else{
+	int status;
+	waitpid(pid, &status, 0);
+	int swReturn = WEXITSTATUS(status);
+
+	if(swReturn == 3){ // for bye 
+		printf("\nBye Bye\n");
+		exit(0);
+		}
+	if(swReturn == 4){
+		chdir(parsed[1]); 
+	}
+	return swReturn;
+	}
 }
 
 // function for parsing command words
 void parseSpace(char* str, char** parsed){
 	int i;
-
 	for (i = 0; i < MAXLIST; i++) {
 		parsed[i] = strsep(&str, " ");
 
@@ -332,13 +351,9 @@ int processString(char* str, char** parsed){
 
 int main(){
     FILE *fptr;
-    //char fname[20]="history.txt";
-    //fptr=fopen(fname,"w");	
-
 	char inputString[MAXCOM], *parsedArgs[MAXLIST];
 	int execFlag = 0;
 	ShellStart();
-
 	while (1) {
 		// print shell line
 		printDirectory();
@@ -348,8 +363,6 @@ int main(){
 			continue;
             
         }
-        //fclose(fptr); 
-
 		// process
 		execFlag = processString(inputString,parsedArgs);
 
