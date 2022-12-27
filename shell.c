@@ -87,7 +87,8 @@ int firstPart(char* dir){
 	char word[1000];
 	fp = fopen(dir, "r");
 	if (fp == NULL) {
-    	printf("The file address if wrong!\n");
+    	fprintf(stderr, "Unable to open file\n" );
+		return 0;
 } 	else {
     	while (!feof(fp)) {
 			fscanf(fp,"%s%*[^\n]",word);
@@ -111,8 +112,8 @@ int MostRepeatString(char *dir){
       
     //If file doesn't exist  
     if (file == NULL){  
-        printf("File not found");  
-        exit(EXIT_FAILURE);  
+        fprintf(stderr, "Unable to open file\n" );
+        return 0;
     }  
       
     //Since, C doesn't provide in-built function,   
@@ -164,7 +165,9 @@ int DelSpace(char *dir){
 	int a;
 
 	f = fopen (dir,"r");
-
+	if (f == NULL) {
+    	fprintf(stderr, "Unable to open file\n" );
+}
 	if (f){
 		do {
 			a = fgetc (f);
@@ -184,7 +187,7 @@ int CountLine(char *dir){
  
     // Check if file exists
     if (fp == NULL){
-        printf("Could not open file");
+        fprintf(stderr, "Unable to open file\n" );
         return 0;
     }
  
@@ -203,7 +206,7 @@ int ShowUnComment(char *dir){
 	FILE *f;
 	f = fopen(dir, "r");
 	if(f == NULL){
-		printf("File doesn't exit");
+		fprintf(stderr, "Unable to open file\n" );
 		return 0;
 	}
 	int cc;
@@ -228,7 +231,7 @@ int FirstTenLine(char *dir){
     // Open file
     myfile = fopen(dir, "r");
     if (myfile  == NULL){
-        printf("Cannot open file \n");
+        fprintf( stderr, "Unable to open file\n" );
         return 0;
 }
     // Read the first 10 lines from file
@@ -271,7 +274,7 @@ int ownCmdHandler(char** parsed){
 	}
 	switch (switchOwnArg) {
 	case 1:
-		printf("\nGoodbye\n");
+		printf("\nBye Bye\n");
 		exit(0);
 	case 2:
 		chdir(parsed[1]);
