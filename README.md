@@ -12,3 +12,7 @@ mrs -> show most repeat string
 ds -> delete white spaces
 
 cl -> counting lines of file 
+
+suc -> show uncomment line
+
+ftl -> first ten lines
