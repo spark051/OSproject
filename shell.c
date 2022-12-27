@@ -23,13 +23,15 @@ void ShellStart(){
 //get input
 int GetInput(char* str){
 	char* buf;
-    //FILE *f = fopen("history.txt", "w");
+	FILE *f;
+	f = fopen("history.txt", "w");
 
 	buf = readline("\n>> ");
 	if (strlen(buf) != 0) {
-        //fprintf(f, "%s\n", buf);
+		
+        fprintf(f, "%s\n", buf);
+		//fscanf(f, "%s", buf);
 		add_history(buf);
-        
 		strcpy(str, buf);
 
 		return 0;
@@ -58,7 +60,7 @@ void execArgs(char** parsed){
 		}
 		return;
 	} else if (pid == -1) {
-			printf("\nFailed forking child..");
+			printf("\nFailed forking child.");
 		exit(0);
 	} else {
 		// waiting for child to terminate
@@ -197,10 +199,57 @@ int CountLine(char *dir){
     return 0;
 }
 
+int ShowUnComment(char *dir){
+	FILE *f;
+	f = fopen(dir, "r");
+	if(f == NULL){
+		printf("File doesn't exit");
+		return 0;
+	}
+	int cc;
+	while((cc = getc(f)) != EOF){
+		if(cc == '#'){
+			while(cc != '\n'){
+				cc = getc(f);
+			}
+		printf("\n");
+		}
+		else{
+			printf("%c",cc);
+		}
+	}
+}
+
+int FirstTenLine(char *dir){
+	FILE *myfile;
+    char content;
+    int max = 0;
+
+    // Open file
+    myfile = fopen(dir, "r");
+    if (myfile  == NULL){
+        printf("Cannot open file \n");
+        return 0;
+}
+    // Read the first 10 lines from file
+    content  = fgetc(myfile);
+    while (content != EOF && max < 10){
+        if(content == '\n'){
+            max++;
+        }
+        printf ("%c", content);
+        content = fgetc(myfile);
+    }
+ 
+    fclose(myfile);
+    return 0;
+}
+
+
 // Function to execute builtin commands
 int ownCmdHandler(char** parsed){
 
-	int NoOfOwnCmds = 7, i, switchOwnArg = 0;
+	int NoOfOwnCmds = 9, i, switchOwnArg = 0;
 	char* ListOfOwnCmds[NoOfOwnCmds];
 	char* username;
 
@@ -210,7 +259,9 @@ int ownCmdHandler(char** parsed){
 	ListOfOwnCmds[3] = "fp"; //first part in each line 
     ListOfOwnCmds[4] = "mrs"; //most repeat string
     ListOfOwnCmds[5] = "ds"; //delete spaces
-    ListOfOwnCmds[6] = "cl";
+    ListOfOwnCmds[6] = "cl"; //count line
+	ListOfOwnCmds[7] = "suc"; //show uncomment txt
+	ListOfOwnCmds[8] = "ftl"; //first ten line 
 
 	for (i = 0; i < NoOfOwnCmds; i++) {
 		if (strcmp(parsed[0], ListOfOwnCmds[i]) == 0) {
@@ -240,7 +291,13 @@ int ownCmdHandler(char** parsed){
     case 7:
         CountLine(parsed[1]); //cl
         return 1;
-
+	case 8:
+		ShowUnComment(parsed[1]); //suc
+		return 1;
+	case 9:
+		FirstTenLine(parsed[1]); //ftl
+		return 1;
+	
 	default:
 		break;
 	}
