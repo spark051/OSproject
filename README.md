@@ -1,6 +1,9 @@
 # OSproject
 a simple linux shell
 
+
+Commands:
+
 exit -> exit from shell
 
 help -> show help menu
