@@ -1,5 +1,5 @@
 # OSproject
-linux shell
+a simple linux shell
 
 exit -> exit from shell
 
