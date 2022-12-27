@@ -4,7 +4,7 @@ a simple linux shell
 
 Commands:
 
-exit -> exit from shell
+bye -> exit from shell
 
 help -> show help menu
 
