@@ -66,7 +66,7 @@ void execArgs(char** parsed){
 	}
 }
 
-// Help command 
+// Help menu 
 void HelpMenu(){
 	puts("\n***WELCOME TO MY SHELL HELP***\n"
 		"\nList of Commands supported:\n"
