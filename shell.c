@@ -9,37 +9,24 @@
 #define MAXCOM 1000 // max number of letters to be supported
 #define MAXLIST 100 // max number of commands to be supported
 
-// shell  start
-void ShellStart(){
-    printf("\033[H\033[J"); // clear shell
-    printf("Welcome to our Linux Shell :)\n");
-    char* username = getenv("USER");
-    sleep(1);
-}
-
-//get input
 int GetInput(char* str){
 	char* buf;
 	FILE *f;
 	f = fopen("history.txt", "w");
 
 	buf = readline("\n>> ");
-	if (strlen(buf) != 0) {
-		
+	if (strlen(buf) != 0) {		
         fprintf(f, "%s\n", buf);
-		//fscanf(f, "%s", buf);
 		add_history(buf);
 		strcpy(str, buf);
 
 		return 0;
-        //fclose(f);
 	} 
     else {
 		return 1;
 	}
 }
 
-// print Directory
 void printDirectory(){
 	char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
@@ -47,12 +34,12 @@ void printDirectory(){
 }
 
 // Function where the system command is executed
-void execArgs(char** parsed){
+void execArgs(char** input){
 	// Forking a child
 	pid_t pid = fork();
 
 	if (pid == 0) {
-		if (execvp(parsed[0], parsed) < 0) {
+		if (execvp(input[0], input) < 0) {
 			printf("\nWHAT IS THIS?!");
 		}
 		return;
@@ -66,10 +53,10 @@ void execArgs(char** parsed){
 	}
 }
 
-// Help menu 
+// Help command 
 void HelpMenu(){
 	puts("\n***WELCOME TO MY SHELL HELP***\n"
-		"\nList of Commands supported:\n"
+		"\nList of Commands :\n"
 		"\n>cd ->  change directory"
 		"\n>ls -> long listing format"
 		"\n>exit -> exit from shell"
@@ -86,16 +73,16 @@ void HelpMenu(){
 
 int firstPart(char* dir){
 	FILE *fp;
-	char word[1000];
+	char str[1000];
 	fp = fopen(dir, "r");
 	if (fp == NULL) {
     	fprintf(stderr, "Unable to open file\n" );
 		return 0;
 } 	else {
     	while (!feof(fp)) {
-			fscanf(fp,"%s%*[^\n]",word);
-        	printf("%s\n", word);
-        	strcpy(word,"");
+			fscanf(fp,"%s%*[^\n]",str);
+        	printf("%s\n", str);
+        	strcpy(str,"");
     }
 }
 	fclose(fp);
@@ -103,24 +90,20 @@ int firstPart(char* dir){
 }
 
 int MostRepeatString(char *dir){
-    FILE *file;  
+    FILE *f;  
     char ch, *line;  
     size_t len = 0, read;  
     char words[1000][1000], word[20];  
     int i = 0, j, k, maxCount = 0, count;  
       
-    //Opens file in read mode  
-    file = fopen(dir,"r");  
-      
-    //If file doesn't exist  
-    if (file == NULL){  
+    f = fopen(dir,"r");  
+    if (f == NULL){  
         fprintf(stderr, "Unable to open file\n" );
         return 0;
     }  
-      
     //Since, C doesn't provide in-built function,   
     //following code will split content of file into words  
-    while ((read = getline(&line, &len, file)) != -1) {  
+    while ((read = getline(&line, &len, f)) != -1) {  
           
         for(k=0; line[k]!='\0'; k++){  
             //Here, i represents row and j represents column of two-dimensional array words   
@@ -157,7 +140,7 @@ int MostRepeatString(char *dir){
     }  
       
     printf("%s\n", word);  
-    fclose(file);  
+    fclose(f);  
       
     return 0;  
 }
@@ -177,30 +160,29 @@ int DelSpace(char *dir){
 		} while (a != EOF);
 		fclose (f);
 	}
-	printf("\n\n");
+	printf("\n");
 	return 0;
 }
 
 int CountLine(char *dir){
-    FILE *fp;
-    int count = 1;  // Line counter (result)
-    char c;  // To store a character read from file
-    fp = fopen(dir, "r");
+    FILE *f;
+    int count = 1;  // Line counter
+    char c;  // store a char from file
+    f = fopen(dir, "r");
  
-    // Check if file exists
-    if (fp == NULL){
+    if (f == NULL){
         fprintf(stderr, "Unable to open file\n" );
         return 0;
     }
  
     // Extract characters from file and store in character c
-    for (c = getc(fp); c != EOF; c = getc(fp))
+    for (c = getc(f); c != EOF; c = getc(f))
         if (c == '\n') // Increment count if this character is newline
             count = count + 1;
  
     // Close the file
     printf("The file %s has %d lines\n ", dir, count);
-    fclose(fp); 
+    fclose(f); 
     return 0;
 }
 
@@ -226,27 +208,27 @@ int ShowUnComment(char *dir){
 }
 
 int FirstTenLine(char *dir){
-	FILE *myfile;
+	FILE *f;
     char content;
     int max = 0;
 
     // Open file
-    myfile = fopen(dir, "r");
-    if (myfile  == NULL){
+    f = fopen(dir, "r");
+    if (f  == NULL){
         fprintf( stderr, "Unable to open file\n" );
         return 0;
 }
     // Read the first 10 lines from file
-    content  = fgetc(myfile);
+    content  = fgetc(f);
     while (content != EOF && max < 10){
         if(content == '\n'){
             max++;
         }
         printf ("%c", content);
-        content = fgetc(myfile);
+        content = fgetc(f);
     }
  
-    fclose(myfile);
+    fclose(f);
     return 0;
 }
 
@@ -349,19 +331,21 @@ int processString(char* str, char** parsed){
 		return 1;
 }
 
+void ShellStart(){
+    printf("\033[H\033[J"); // clear shell
+    printf("Welcome to our Linux Shell :)\n");
+    char* username = getenv("USER");
+    sleep(1);
+}
+
 int main(){
-    FILE *fptr;
 	char inputString[MAXCOM], *parsedArgs[MAXLIST];
 	int execFlag = 0;
 	ShellStart();
 	while (1) {
-		// print shell line
 		printDirectory();
-		// take input
 		if (GetInput(inputString)){
-            //fprintf(fptr,"%s",GetInput(inputString));
-			continue;
-            
+			continue;            
         }
 		// process
 		execFlag = processString(inputString,parsedArgs);
