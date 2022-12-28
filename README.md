@@ -25,4 +25,3 @@ cd -> change directory
 ls -> list of files and directories
 
 pwd -> print working directory
-ب
