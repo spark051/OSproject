@@ -19,3 +19,10 @@ cl -> counting lines of file
 suc -> show uncomment line
 
 ftl -> first ten lines
+
+cd -> change directory
+
+ls -> list of files and directories
+
+pwd -> print working directory
+ب
