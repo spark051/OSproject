@@ -59,7 +59,7 @@ void HelpMenu(){
 		"\nList of Commands :\n"
 		"\n>cd ->  change directory"
 		"\n>ls -> long listing format"
-		"\n>exit -> exit from shell"
+		"\n>bye -> exit from shell"
 		"\n>fp -> show first word in each line"
 		"\nmrs -> show most repeat string"
 		"\nds -> delete white spaces"
@@ -339,6 +339,7 @@ void sigintHandler(int sig_num){ // for don't work ctrl + c
     signal(SIGINT, sigintHandler);
     printf("\n Cannot be terminated using Ctrl+C \n");
     fflush(stdout);
+	//exit(0);
 }
 
 int main(){
