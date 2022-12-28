@@ -338,9 +338,18 @@ void ShellStart(){
     sleep(1);
 }
 
+void sigintHandler(int sig_num){ // for don't work ctrl + c
+
+    signal(SIGINT, sigintHandler);
+    printf("\n Cannot be terminated using Ctrl+C \n");
+    fflush(stdout);
+}
+
+
 int main(){
 	char inputString[MAXCOM], *parsedArgs[MAXLIST];
 	int execFlag = 0;
+	signal(SIGINT, sigintHandler);
 	ShellStart();
 	while (1) {
 		printDirectory();
