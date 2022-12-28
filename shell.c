@@ -341,7 +341,6 @@ void sigintHandler(int sig_num){ // for don't work ctrl + c
     fflush(stdout);
 }
 
-
 int main(){
 	char inputString[MAXCOM], *parsedArgs[MAXLIST];
 	int execFlag = 0;
@@ -352,10 +351,8 @@ int main(){
 		if (GetInput(inputString)){
 			continue;            
         }
-		// process
 		execFlag = processString(inputString,parsedArgs);
 
-		// execute
 		if (execFlag == 1)
 			execArgs(parsedArgs);
 	}
