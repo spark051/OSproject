@@ -259,16 +259,13 @@ int ownCmdHandler(char** parsed){
 	pid_t pid = fork();
 	if (pid == 0){
 	switch (switchOwnArg) {
-	case 1:
-		//printf("\nBye Bye\n"); //bye
-		exit(3);
+	case 1: 
+		exit(3); //bye
 	case 2: 
-		//chdir(parsed[1]); //cd
-		exit(4);
-		//return 1;
-	case 3:
+		exit(4); //cd
+	case 3: 
 		HelpMenu();
-		exit(1);
+		exit(1); //help
 	case 4:
 		firstPart(parsed[1]); //fp
 		exit(1);
@@ -339,7 +336,6 @@ void ShellStart(){
 }
 
 void sigintHandler(int sig_num){ // for don't work ctrl + c
-
     signal(SIGINT, sigintHandler);
     printf("\n Cannot be terminated using Ctrl+C \n");
     fflush(stdout);
