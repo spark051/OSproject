@@ -11,12 +11,9 @@
 
 int GetInput(char* str){
 	char* buf;
-	FILE *f;
-	f = fopen("history.txt", "w");
-
 	buf = readline("\n>> ");
 	if (strlen(buf) != 0) {		
-        fprintf(f, "%s\n", buf);
+		write_history("history.txt");
 		add_history(buf);
 		strcpy(str, buf);
 
