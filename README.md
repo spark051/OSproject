@@ -1,5 +1,5 @@
 # OSproject
-a simple linux shell
+#a simple linux shell
 
 
 Commands:
